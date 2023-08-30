@@ -40,4 +40,40 @@ cartsRouter.post("/:cid/products/:pid", async (req, res) => {
     }
 });
 
+cartsRouter.put("/:cid/products/:pid", async (req, res) => {
+    const cid = req.params.cid;
+    const pid = req.params.pid;
+    const quantity = req.body.quantity;
+    const result = await CM.updateQuantityProductCart(cid, pid, quantity);
+
+    if (result) {
+        res.send({status:"ok", message:"Producto actualizado correctamente!"});
+    } else {
+        res.status(400).send({status:"error", message:"Error! Hubo un problema actualizar el Producto del Carrito!"});
+    }
+});
+
+cartsRouter.delete("/:cid/products/:pid", async (req, res) => {
+    const cid = req.params.cid;
+    const pid = req.params.pid;
+    const result = await CM.deleteProductCart(cid, pid);
+
+    if(result){
+        res.send({status:"ok", message:"Producto eliminado del carrito!"});
+    } else {
+        res.status(400).send({status:"error", message:"Error! Hubo un problema al eliminar el producto del carrito!"});
+    }
+});
+
+cartsRouter.delete("/:cid", async (req, res) => {
+    const cid = req.params.cid;
+    const result = await CM.deleteProductsCart(cid);
+
+    if (result) {
+        res.send({status:"ok", message:"El carrito se vació correctamente!"});
+    } else {
+        res.status(400).send({status:"error", message:"Error! No se pudo vaciar el Carrito!"});
+    }
+});
+
 export default cartsRouter;

@@ -36,9 +36,9 @@ class ProductManager {
 
     async deleteProduct(id) {
         try {
-            if (this.validateId(id)) {    
+            if (this.validateId(id)) {
                 if (await this.getProductById(id)) {
-                    await productModel.deleteOne({_id:id});
+                    await productModel.deleteOne({ _id: id });
                     console.log("Producto eliminado correctamente!");
                     return true;
                 }
@@ -50,8 +50,24 @@ class ProductManager {
         }
     }
 
-    async getProducts(limit) {
-        return await limit ? productModel.find().limit(limit).lean() : productModel.find().lean();
+    async getProducts(params) {
+        let { limit, page, query, sort } = params;
+        limit = limit ? limit : 10;
+        page = page ? page : 1;
+        query = query || {};
+        sort = sort ? sort == "asc" ? 1 : -1 : 0;
+
+        let products = await productModel.paginate(query, { limit: limit, page: page, sort: { price: sort } });
+
+        let status = products ? "succes" : "error";
+
+        let prevLink = products.hasPrevPage ? "hhtp://localhost:8080/api/products?limit=" + limit + "&page=" + products.prevPage : null;
+        let nextLink = products.hasNextPage ? "hhtp://localhost:8080/api/products?limit=" + limit + "&page=" + products.nextPage : null;
+
+
+        products = { status: status, payload: products.docs, prevPage: products.prevPage, nextPage: products.nextPage, page: products.page, hasPrevPage: products.hasPrevPage, hasNextPage: products.hasNextPage, prevLink: prevLink, nextLink: nextLink };
+
+        return products;
     }
 
     async getProductById(id) {

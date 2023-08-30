@@ -1,9 +1,19 @@
 import mongoose from "mongoose";
-import cartsRouter from "../../routes/carts.router.js";
 
 const cartSchema = new mongoose.Schema({
-    id: Number,
-    products: Array
+    products: [
+        {
+          product: {
+            type: String,
+            ref: 'products'
+          },
+          quantity: Number,
+        }
+    ]
+});
+
+cartSchema.pre("findOne", function() {
+    this.populate("products.product");
 });
 
 export const cartModel = mongoose.model("carts", cartSchema);

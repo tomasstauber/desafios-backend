@@ -44,6 +44,64 @@ class cartManager {
         }
     }
 
+    async updateQuantityProductCart(cid, pid, quantity) {
+        try {
+            if (this.validateId(cid)) {
+                const cart = await this.getCart(cid);
+                const product = cart.products.find(item => item.product === pid);
+                product.quantity = quantity;
+
+                await cartModel.updateOne({_id:cid}, {products:cart.products});
+                console.log("Producto actualizado correctamente!");
+    
+                return true;
+            } else {
+                console.log("Ningún producto coincide con ese Id!");
+                
+                return false;
+            }
+        } catch (error) {
+            return false
+        }
+    }
+
+    async deleteProductCart(cid, pid) {
+        try {
+            if (this.validateId(cid)) {
+                const cart = await this.getCart(cid);
+                const products = cart.products.filter(item => item.product !== pid);
+                await cartModel.updateOne({ _id: cid }, { products: products });
+                console.log("Producto eliminado del carrito!");
+                return true;
+            } else {
+                console.log("No existe un producto con ese Id!");
+                return false;
+            }
+        } catch (error) {
+            console.log("Ha ocurrido un error al eliminar el producto del carrito!");
+            return false;
+        }
+    }
+
+    async deleteProductsCart(cid) {
+        try {
+            if (this.validateId(cid)) {
+                const cart = await this.getCart(cid);
+
+                await cartModel.updateOne({_id:cid}, {products:[]});
+                console.log("Productos eliminados correctamente!");
+    
+                return true;
+            } else {
+                console.log("No existe ningún p4roducto con ese Id!");
+                
+                return false;
+            }
+        } catch (error) {
+            return false
+        }
+    }
+
     validateId(id) {
         return id.length === 24 ? true : false;
     }
