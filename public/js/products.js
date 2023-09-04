@@ -13,7 +13,7 @@ const crearCarrito = async () => {
             return data;
         }
     } catch(error) {
-        console.log("Error en Crear el Carrito! " + error);
+        console.log("Ha ocurrido un error al crear el carrito! " + error);
     }
 }
 
@@ -23,7 +23,7 @@ const obtenerIdCarrito = async () => {
     
         return cart.id;
     } catch(error) {
-        console.log("Error en obtener el Id del Carrito! " + error);
+        console.log("Error! No existe ningún carrito con ese ID! " + error);
     }
 }
 
@@ -37,9 +37,9 @@ const agregarProductoAlCarrito = async (pid) => {
         })
         .then(response => response.json())
         .then(data => {
-            console.log("Se agregó al Carrito!");
+            console.log("Producto agregado al carrito!");
         });
     } catch(error) {
-        console.log("Error en agregar el Producto al Carrito! " + error);
+        console.log("Error! Ha ocurrido un error al agregar el producto! " + error);
     }
-}   
+}

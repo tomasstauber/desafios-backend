@@ -1,39 +1,42 @@
 import express from "express";
 import __dirname from "./utils.js";
-import handlebars from "express-handlebars";
-import viewsRouter from "./routes/views.routes.js";
-import {Server} from "socket.io";
-import ProductManager from "./dao/ProductManager.js";
+import Handlebars from "handlebars";
+import { Server } from "socket.io";
 import mongoose from "mongoose";
-import chatManager from "./dao/chatManager.js";
-
+import ProductManager from "./dao/ProductManager.js";
+import ChatManager from "./dao/ChatManager.js";
 import productsRouter from "./routes/products.router.js";
+import viewsRouter from "./routes/views.routes.js";
 import cartsRouter from "./routes/carts.router.js";
+import expressHandlebars from "express-handlebars";
+import { allowInsecurePrototypeAccess } from '@handlebars/allow-prototype-access'
 
 const app = express();
-const PORT = 8080;
-const httpServer = app.listen(PORT, () => {
-    console.log("Servidor Activo en el puerto: " + PORT);
+const puerto = 8080;
+const httpServer = app.listen(puerto, () => {
+    console.log("Servidor Activo en el puerto: " + puerto);
 });
-
 const socketServer = new Server(httpServer);
-const CM = new chatManager();
 const PM = new ProductManager();
+const CM = new ChatManager();
+const urlConnect = "mongodb+srv://tomastauber:ZWx5dcTbW71K5hk4@tomascluster.tkfwypg.mongodb.net/e-commerce?retryWrites=true&w=majority";
 
-app.engine("handlebars", handlebars.engine());
 app.set("views", __dirname + "/views");
+app.engine('handlebars', expressHandlebars.engine({
+    handlebars: allowInsecurePrototypeAccess(Handlebars)
+}));
 app.set("view engine", "handlebars");
-app.use(express.static(__dirname + "/public"));
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
+app.use(express.static(__dirname + "/public"));
 app.use("/api/products/", productsRouter);
 app.use("/api/carts/", cartsRouter);
 app.use("/", viewsRouter);
 
-mongoose.connect("mongodb+srv://tomastauber:ZWx5dcTbW71K5hk4@tomascluster.tkfwypg.mongodb.net/e-commerce?retryWrites=true&w=majority");
+mongoose.connect(urlConnect);
 
 socketServer.on("connection", (socket) => {
-    console.log("Se ha iniciado una nueva conexión!");
+    console.log("Nueva Conexión!");
 
     const products = PM.getProducts();
     socket.emit("realTimeProducts", products);

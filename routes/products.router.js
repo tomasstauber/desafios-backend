@@ -6,7 +6,6 @@ const PM = new ProductManager();
 
 productsRouter.get("/", async (req, res) => {
     const products = await PM.getProducts(req.query);
-
     res.send({products})
 });
 
