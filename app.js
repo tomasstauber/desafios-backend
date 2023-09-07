@@ -10,6 +10,7 @@ import viewsRouter from "./routes/views.routes.js";
 import cartsRouter from "./routes/carts.router.js";
 import expressHandlebars from "express-handlebars";
 import { allowInsecurePrototypeAccess } from '@handlebars/allow-prototype-access'
+import sessionsRouter from "./routes/sesions.routes.js"
 
 const app = express();
 const puerto = 8080;
@@ -29,9 +30,10 @@ app.set("view engine", "handlebars");
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(express.static(__dirname + "/public"));
+app.use("/", viewsRouter);
 app.use("/api/products/", productsRouter);
 app.use("/api/carts/", cartsRouter);
-app.use("/", viewsRouter);
+app.use("/api/sessions/", sessionsRouter);
 
 mongoose.connect(urlConnect);
 

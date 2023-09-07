@@ -65,6 +65,19 @@ class cartManager {
         }
     }
 
+    async updateProducts(cid, products) {
+        try {
+            await cartModel.updateOne({_id:cid}, {products:products}, {new:true, upsert:true});
+            console.log("Producto actualizado correctamente!");
+    
+            return true;
+        } catch (error) {
+            console.log("No se encontró ningún producto con ese Id!");
+            
+            return false;
+        }
+    }
+
     async deleteProductCart(cid, pid) {
         try {
             if (this.validateId(cid)) {
