@@ -7,7 +7,7 @@ const CM = new CartManager();
 cartsRouter.post("/", async (req, res) => {
     const newCart = await CM.newCart();
     if (newCart) {
-        res.send({ status: "ok", message: "Carrito creado exitosamente!" });
+        res.send({ status: "ok", message: "Carrito creado exitosamente!", id:cart._id});
     } else {
         res.status(500).send({ status: "error", message: "Error! Hubo un problema al crear el carrito!" });
     }
@@ -41,7 +41,7 @@ cartsRouter.put("/:cid/products/:pid", async (req, res) => {
     const cid = req.params.cid;
     const pid = req.params.pid;
     const quantity = req.body.quantity;
-    const result = await CM.updateQuantityProductCart(cid, pid, quantity);
+    const result = await CM.updateQuantity(cid, pid, quantity);
 
     if (result) {
         res.send({ status: "ok", message: "Producto actualizado correctamente!" });
@@ -86,3 +86,4 @@ cartsRouter.delete("/:cid", async (req, res) => {
 });
 
 export default cartsRouter;
+
