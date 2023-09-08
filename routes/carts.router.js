@@ -7,7 +7,7 @@ const CM = new CartManager();
 cartsRouter.post("/", async (req, res) => {
     const newCart = await CM.newCart();
     if (newCart) {
-        res.send({ status: "ok", message: "Carrito creado exitosamente!", id:cart._id});
+        res.send({ status: "ok", message: "Carrito creado exitosamente!", id:newCart._id});
     } else {
         res.status(500).send({ status: "error", message: "Error! Hubo un problema al crear el carrito!" });
     }
